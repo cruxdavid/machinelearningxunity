@@ -187,8 +187,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 30
+  far clip plane: 60
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -481,7 +481,7 @@ MonoBehaviour:
   botPrefab: {fileID: 1562207838379906268, guid: 0fddabff669ba4c97b486d29244b661a,
     type: 3}
   populationSize: 50
-  trialTime: 15
+  trialTime: 10
 --- !u!1 &2112824882
 GameObject:
   m_ObjectHideFlags: 0

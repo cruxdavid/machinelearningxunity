@@ -15,7 +15,7 @@ public class GenerateMaze : MonoBehaviour {
                 if ( w == 0 || d == 0 ) //outside walls bottom and left
                 {
                     Instantiate ( blockPrefab , new Vector3 ( w + this.transform.position.x , this.transform.position.y , d + this.transform.position.z ) , Quaternion.identity );
-                } else if ( w < 3 && d < 3 ) {
+                } else if ( w < 5 && d < 5 ) {
                     continue;
                 } else if ( w == width - 1 || d == depth - 1 ) //outside walls top and right
                   {
