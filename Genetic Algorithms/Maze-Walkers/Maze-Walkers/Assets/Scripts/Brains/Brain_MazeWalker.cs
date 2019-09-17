@@ -6,10 +6,12 @@ public class Brain_MazeWalker : MonoBehaviour {
     public float distanceTravelled;
     public DNA dna;
     public GameObject eyes;
+    
 
     bool seeFrontWall = true;
     bool seeLeftWall = true;
     bool seeRightWall = true;
+    bool DNAConsidersPhysics = false;
 
     int DNALength = 5;
     int DNAMaxValues = 3;
@@ -24,7 +26,7 @@ public class Brain_MazeWalker : MonoBehaviour {
          * 2 right
          */
 
-        dna = new DNA ( DNALength , DNAMaxValues );
+        dna = new DNA ( DNALength , DNAMaxValues, false );
     }
 
     private void Start () {
