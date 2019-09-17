@@ -6,6 +6,10 @@ TagManager:
   tags:
   - wall
   - dead
+  - floor
+  - roof
+  - upwall
+  - downwall
   layers:
   - Default
   - TransparentFX
