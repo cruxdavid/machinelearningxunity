@@ -61,11 +61,9 @@ public class Brain_BirdBot : MonoBehaviour {
             if ( hit.transform.tag == "upwall" ) {
                 seeUpWall = true;
                 Debug.DrawLine ( eyes.transform.position , hit.transform.position , Color.red );
-
             } else if ( hit.transform.tag == "downwall" ) {
                 seeDownWall = true;
                 Debug.DrawLine ( eyes.transform.position , hit.transform.position , Color.red );
-
             }
         }
 
