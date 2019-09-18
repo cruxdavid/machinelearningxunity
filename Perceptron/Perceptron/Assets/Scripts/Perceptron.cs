@@ -9,19 +9,24 @@ public class TrainingSet {
 }
 
 public class Perceptron : MonoBehaviour {
+
+    public int trainingSessions;
     public TrainingSet[] trainingSets;
 
     double[] weights = { 0 , 0 };
     double bias = 0;
     double totalError = 0;
 
-    private void Start () {
-        Train ( 8 );
+    public SimpleGrapher simpleGrapher;
 
-        Debug.Log ( "Test 0 0 :" + CalcOutput ( 0 , 0 ) );
-        Debug.Log ( "Test 0 1 :" + CalcOutput ( 0 , 1 ) );
-        Debug.Log ( "Test 1 0 :" + CalcOutput ( 1 , 0 ) );
-        Debug.Log ( "Test 1 1 :" + CalcOutput ( 1 , 1 ) );
+    private void Start () {
+        DrawAllPoints ();
+        Train ( trainingSessions );
+        simpleGrapher.DrawRay ((float)(-(bias/weights[1])/(bias/weights[0])), (float)(-bias/weights[1]),Color.red);
+        //Debug.Log ( "Test 0 0 :" + CalcOutput ( 0 , 0 ) );
+        //Debug.Log ( "Test 0 1 :" + CalcOutput ( 0 , 1 ) );
+        //Debug.Log ( "Test 1 0 :" + CalcOutput ( 1 , 0 ) );
+        //Debug.Log ( "Test 1 1 :" + CalcOutput ( 1 , 1 ) );
 
     }
 
@@ -91,7 +96,7 @@ public class Perceptron : MonoBehaviour {
 
     double CalcOutput ( double i1 , double i2 ) {
 
-        double[] inp = new double[] { i1 , i2 };
+        double[] inp = { i1 , i2 };
 
         double dp = DotProductBias ( weights , inp );
 
@@ -103,7 +108,15 @@ public class Perceptron : MonoBehaviour {
 
     }
 
-
+    void DrawAllPoints () {
+        for ( int i = 0; i < trainingSets.Length; i++ ) {
+            if (trainingSets[i].output == 0) {
+                simpleGrapher.DrawPoint ((float)trainingSets[i].input[0], ( float ) trainingSets[i].input[1], Color.magenta );
+            } else {
+                simpleGrapher.DrawPoint ( ( float ) trainingSets[i].input[0] , ( float ) trainingSets[i].input[1] , Color.green );
+            }
+        }
+    }
 
 
 }
