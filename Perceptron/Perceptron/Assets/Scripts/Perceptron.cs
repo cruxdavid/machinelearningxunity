@@ -1,12 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
-[System.Serializable]
-public class TrainingSet {
-    public double[] input;
-    public double output;
-}
 
 public class Perceptron : MonoBehaviour {
 
@@ -17,8 +13,6 @@ public class Perceptron : MonoBehaviour {
     double[] weights = { 0 , 0 };
     double bias = 0;
     double totalError = 0;
-
-
 
     //public SimpleGrapher simpleGrapher;
 
@@ -32,19 +26,43 @@ public class Perceptron : MonoBehaviour {
         //Debug.Log ( "Test 0 1 :" + CalcOutput ( 0 , 1 ) );
         //Debug.Log ( "Test 1 0 :" + CalcOutput ( 1 , 0 ) );
         //Debug.Log ( "Test 1 1 :" + CalcOutput ( 1 , 1 ) );
+    }
 
+    private void Update () {
+        if (Input.GetKeyDown("s")) {
+            SaveWeights ();
+        }else if (Input.GetKeyDown("l")) {
+            LoadWeights ();
+        }
     }
 
     void InitialiseWeights () {
-
         for ( int i = 0; i < weights.Length; i++ ) {
             weights[i] = Random.Range ( -1.0f , 1.0f );
         }
         bias = Random.Range ( -1.0f , 1.0f );
     }
 
-    public void SendInput ( double i1 , double i2 , double o ) {
+    void LoadWeights () {
+        string path = Application.dataPath + "/weights.txt";
+        if (File.Exists(path)) {
+            var sr = File.OpenText (path);
+            string line = sr.ReadLine ();
+            string[] w = line.Split (',');
+            weights[0] = System.Convert.ToDouble (w[0]);
+            weights[1] = System.Convert.ToDouble (w[1]);
+            bias = System.Convert.ToDouble (w[2]);
+        }
+    }
 
+    void SaveWeights () {
+        string path = Application.dataPath + "/weights.txt";
+        var sr = File.CreateText (path);
+        sr.WriteLine (weights[0]+","+weights[1]+","+bias);
+        sr.Close();
+    }
+
+    public void SendInput ( double i1 , double i2 , double o ) {
         //react 
         double result = CalcOutput ( i1 , i2 );
         Debug.Log ( result );
@@ -56,7 +74,7 @@ public class Perceptron : MonoBehaviour {
         }
 
         //learn from it next time
-        TrainingSet ts = new TrainingSet();
+        TrainingSet ts = new TrainingSet ();
         ts.input = new double[2] { i1 , i2 };
         ts.output = o;
         trainingSets.Add ( ts );
@@ -64,7 +82,6 @@ public class Perceptron : MonoBehaviour {
     }
 
     void Train () {
-
         for ( int i = 0; i < trainingSets.Count; i++ ) {
             UpdateWeights ( i );
         }
@@ -132,4 +149,10 @@ public class Perceptron : MonoBehaviour {
     //}
 
 
+}
+
+[System.Serializable]
+public class TrainingSet {
+    public double[] input;
+    public double output;
 }
