@@ -10,19 +10,24 @@ public class TrainingSet {
 
 public class Perceptron : MonoBehaviour {
 
-    public int trainingSessions;
-    public TrainingSet[] trainingSets;
+    // public int trainingSessions;
+    public GameObject npc;
 
+    List<TrainingSet> trainingSets = new List<TrainingSet> ();
     double[] weights = { 0 , 0 };
     double bias = 0;
     double totalError = 0;
 
-    public SimpleGrapher simpleGrapher;
+
+
+    //public SimpleGrapher simpleGrapher;
 
     private void Start () {
-        DrawAllPoints ();
-        Train ( trainingSessions );
-        simpleGrapher.DrawRay ((float)(-(bias/weights[1])/(bias/weights[0])), (float)(-bias/weights[1]),Color.red);
+        InitialiseWeights ();
+
+        //DrawAllPoints ();
+        // Train ( trainingSessions );
+        //simpleGrapher.DrawRay ((float)(-(bias/weights[1])/(bias/weights[0])), (float)(-bias/weights[1]),Color.red);
         //Debug.Log ( "Test 0 0 :" + CalcOutput ( 0 , 0 ) );
         //Debug.Log ( "Test 0 1 :" + CalcOutput ( 0 , 1 ) );
         //Debug.Log ( "Test 1 0 :" + CalcOutput ( 1 , 0 ) );
@@ -31,24 +36,37 @@ public class Perceptron : MonoBehaviour {
     }
 
     void InitialiseWeights () {
+
         for ( int i = 0; i < weights.Length; i++ ) {
             weights[i] = Random.Range ( -1.0f , 1.0f );
         }
         bias = Random.Range ( -1.0f , 1.0f );
     }
 
-    void Train ( int epochs ) {
+    public void SendInput ( double i1 , double i2 , double o ) {
 
-        InitialiseWeights ();
+        //react 
+        double result = CalcOutput ( i1 , i2 );
+        Debug.Log ( result );
+        if ( result == 0 ) {
+            npc.GetComponent<Animator> ().SetTrigger ( "Crouch" );
+            npc.GetComponent<Rigidbody> ().isKinematic = false;
+        } else {
+            npc.GetComponent<Rigidbody> ().isKinematic = true;
+        }
 
-        for ( int i = 0; i < epochs; i++ ) {
-            totalError = 0;
+        //learn from it next time
+        TrainingSet ts = new TrainingSet();
+        ts.input = new double[2] { i1 , i2 };
+        ts.output = o;
+        trainingSets.Add ( ts );
+        Train ();
+    }
 
-            for ( int j = 0; j < trainingSets.Length; j++ ) {
-                UpdateWeights ( j );
-                Debug.Log ( "W1: " + weights[0] + " W2: " + weights[1] + " B: " + bias );
-            }
-            Debug.Log ( "TOTAL ERROR: " + totalError );
+    void Train () {
+
+        for ( int i = 0; i < trainingSets.Count; i++ ) {
+            UpdateWeights ( i );
         }
     }
 
@@ -86,37 +104,32 @@ public class Perceptron : MonoBehaviour {
     }
 
     double CalcOutput ( int i ) {
-        double dp = DotProductBias ( weights , trainingSets[i].input );
-        if ( dp > 0 ) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return ActivationFunction ( DotProductBias ( weights , trainingSets[i].input ) );
     }
 
     double CalcOutput ( double i1 , double i2 ) {
 
         double[] inp = { i1 , i2 };
+        return ActivationFunction ( DotProductBias ( weights , inp ) );
+    }
 
-        double dp = DotProductBias ( weights , inp );
-
-        if ( dp > 0 ) {
+    double ActivationFunction ( double dotProdcut ) {
+        if ( dotProdcut > 0 ) {
             return 1;
         } else {
             return 0;
         }
-
     }
 
-    void DrawAllPoints () {
-        for ( int i = 0; i < trainingSets.Length; i++ ) {
-            if (trainingSets[i].output == 0) {
-                simpleGrapher.DrawPoint ((float)trainingSets[i].input[0], ( float ) trainingSets[i].input[1], Color.magenta );
-            } else {
-                simpleGrapher.DrawPoint ( ( float ) trainingSets[i].input[0] , ( float ) trainingSets[i].input[1] , Color.green );
-            }
-        }
-    }
+    //void DrawAllPoints () {
+    //    for ( int i = 0; i < trainingSets.Length; i++ ) {
+    //        if (trainingSets[i].output == 0) {
+    //            simpleGrapher.DrawPoint ((float)trainingSets[i].input[0], ( float ) trainingSets[i].input[1], Color.magenta );
+    //        } else {
+    //            simpleGrapher.DrawPoint ( ( float ) trainingSets[i].input[0] , ( float ) trainingSets[i].input[1] , Color.green );
+    //        }
+    //    }
+    //}
 
 
 }
