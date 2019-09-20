@@ -57,7 +57,12 @@ public class ANN {
                 }
 
                 N -= layers[i].neurons[j].bias;
-                layers[i].neurons[j].output = ActivationFunction ( N );
+
+                if ( i == numHidden ) {
+                    layers[i].neurons[j].output = ActivationFunctionO ( N );
+                } else {
+                    layers[i].neurons[j].output = ActivationFunction ( N );
+                }
                 outputs.Add ( layers[i].neurons[j].output );
             }
         }
@@ -79,14 +84,14 @@ public class ANN {
                 } else {
                     layers[i].neurons[j].errorGradient = layers[i].neurons[j].output * ( 1 - layers[i].neurons[j].output );
                     double errorGradSum = 0;
-                    for ( int p = 0; p < layers[i+1].numNeurons; p++ ) {
+                    for ( int p = 0; p < layers[i + 1].numNeurons; p++ ) {
                         errorGradSum += layers[i + 1].neurons[p].errorGradient * layers[i + 1].neurons[p].weights[j];
                     }
                     layers[i].neurons[j].errorGradient *= errorGradSum;
                 }
 
                 for ( int k = 0; k < layers[i].neurons[j].numInputs; k++ ) {
-                    if (i == numHidden) {
+                    if ( i == numHidden ) {
                         error = desiredOutput[j] - outputs[j];
                         layers[i].neurons[j].weights[k] += alpha * layers[i].neurons[j].inputs[k] * error;
                     } else {
@@ -101,21 +106,61 @@ public class ANN {
 
     //see en.wikipedia.org/wiki/Activation_function
     double ActivationFunction ( double value ) {
-        return Sigmoid (value);
+        return ReLu ( value );
     }
 
-    double Step (double value) { //aka binary step
-        if (value < 0) {
+    double ActivationFunctionO ( double value ) {
+        return Sigmoid ( value );
+    }
+
+    // Activation functions:
+    double Step ( double value ) { //aka binary step
+        if ( value < 0 ) {
             return 0;
         } else {
             return 1;
         }
     }
 
-    double Sigmoid (double value) { // aka logistic softstep
-        double k = ( double ) System.Math.Exp (value);
-        return k / (1.0f + k);
+    double Sigmoid ( double value ) { // aka logistic softstep
+        double k = ( double ) System.Math.Exp ( value );
+        return k / ( 1.0f + k );
     }
+
+    double TanH ( double value ) { // for outputs with (-) values.
+        return ( 2 * ( Sigmoid ( 2 * value ) ) - 1 );
+    }
+
+    double ArcTan (double value) {
+        return Mathf.Atan ((float)value);
+    }
+
+    double Sinusoid (double value) {
+        return Mathf.Sin ((float)value);
+    }
+
+    double ElliotSig_SoftSign (double value) {
+        return ( value / ( 1 + Mathf.Abs ((float) value ) ) );
+    }
+
+    double ReLu ( double value ) { // Rectified Linear Unit
+        if ( value > 0 ) {
+            return value;
+        } else {
+            return 0;
+        }
+    }
+
+    double LeakyReLu ( double value ) {
+        // Same as ReLu for postive values, except it has a slope for negative values.
+        if ( value < 0 ) {
+            return 0.01 * value;
+        } else {
+            return value;
+        }
+    }
+
+    
 
 
 }
