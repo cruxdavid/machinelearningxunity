@@ -60,12 +60,21 @@ public class Brain : MonoBehaviour {
 
         RaycastHit2D hit = Physics2D.Raycast ( ball.transform.position , ballRigidBody.velocity , 1000 , layerMask );
 
-        if (hit.collider != null && hit.collider.gameObject.tag == "backwall") {
-            float dy = ( hit.point.y - paddle.transform.position.y );
+        if ( hit.collider != null ) {
 
-            output = Run ( ball.transform.position.x , ball.transform.position.y , ballRigidBody.velocity.x , ballRigidBody.velocity.y , paddle.transform.position.x , paddle.transform.position.y , dy , true );
+            if ( hit.collider.gameObject.tag == "tops" ) {
+                Vector3 reflection = Vector3.Reflect ( ballRigidBody.velocity , hit.normal );
+                hit = Physics2D.Raycast ( hit.point , reflection , 1000 , layerMask );
+            }
 
-            yVelocity = ( float ) output[0];
+            if ( hit.collider != null && hit.collider.gameObject.tag == "backwall" ) {
+                float dy = ( hit.point.y - paddle.transform.position.y );
+
+                output = Run ( ball.transform.position.x , ball.transform.position.y , ballRigidBody.velocity.x , ballRigidBody.velocity.y , paddle.transform.position.x , paddle.transform.position.y , dy , true );
+
+                yVelocity = ( float ) output[0];
+            }
+
         } else {
             yVelocity = 0;
         }
