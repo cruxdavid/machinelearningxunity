@@ -131,16 +131,16 @@ public class ANN {
         return ( 2 * ( Sigmoid ( 2 * value ) ) - 1 );
     }
 
-    double ArcTan (double value) {
-        return Mathf.Atan ((float)value);
+    double ArcTan ( double value ) {
+        return Mathf.Atan ( ( float ) value );
     }
 
-    double Sinusoid (double value) {
-        return Mathf.Sin ((float)value);
+    double Sinusoid ( double value ) {
+        return Mathf.Sin ( ( float ) value );
     }
 
-    double ElliotSig_SoftSign (double value) {
-        return ( value / ( 1 + Mathf.Abs ((float) value ) ) );
+    double ElliotSig_SoftSign ( double value ) {
+        return ( value / ( 1 + Mathf.Abs ( ( float ) value ) ) );
     }
 
     double ReLu ( double value ) { // Rectified Linear Unit
@@ -160,7 +160,7 @@ public class ANN {
         }
     }
 
-    
+
 
 
 }
