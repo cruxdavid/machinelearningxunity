@@ -120,6 +120,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &48314794 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7283406040757184526, guid: d0a5c4c6ea08bca48b54eefda4dcaa7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7283406040729981348}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &82812388
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,6 +923,7 @@ GameObject:
   - component: {fileID: 599489250}
   - component: {fileID: 599489249}
   - component: {fileID: 599489253}
+  - component: {fileID: 599489252}
   m_Layer: 8
   m_Name: Boundary
   m_TagString: backwall
@@ -1007,6 +1020,19 @@ Transform:
   m_Father: {fileID: 971966191}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!114 &599489252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599489248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08e33db3025d83f4c87a0e1970a7572c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 48314794}
 --- !u!50 &599489253
 Rigidbody2D:
   serializedVersion: 4
@@ -1028,6 +1054,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &773739005 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7283406040757184526, guid: d0a5c4c6ea08bca48b54eefda4dcaa7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1108389808}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &812470395
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,6 +1750,7 @@ GameObject:
   - component: {fileID: 1931475250}
   - component: {fileID: 1931475249}
   - component: {fileID: 1931475253}
+  - component: {fileID: 1931475252}
   m_Layer: 0
   m_Name: Boundary
   m_TagString: backwall
@@ -1808,6 +1847,19 @@ Transform:
   m_Father: {fileID: 971966191}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!114 &1931475252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931475248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08e33db3025d83f4c87a0e1970a7572c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 773739005}
 --- !u!50 &1931475253
 Rigidbody2D:
   serializedVersion: 4
