@@ -48,11 +48,11 @@ public class Drive : MonoBehaviour {
             lDist = 1 - Round ( hit.distance / visibleDistance );
         }
         // right45
-        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
             r45Dist = 1 - Round ( hit.distance / visibleDistance );
         }
         // left45
-        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right , out hit , visibleDistance ) ) {
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
             l45Dist = 1 - Round ( hit.distance / visibleDistance );
         }
 
