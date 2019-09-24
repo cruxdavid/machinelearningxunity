@@ -13,12 +13,12 @@ public class Brain : MonoBehaviour {
     float paddleMaxSpeed = 15;
     public float numSaved = 0;
     public float numMissed = 0;
-
+    public string backwallTag;
     ANN ann;
 
     // Start is called before the first frame update
     void Start () {
-        ann = new ANN ( 6 , 1 , 1 , 4 , 0.11 );
+        ann = new ANN ( 6 , 1 , 1 , 4 , 0.05 );
         ballRigidBody = ball.GetComponent<Rigidbody2D> ();
     }
 
@@ -67,7 +67,7 @@ public class Brain : MonoBehaviour {
                 hit = Physics2D.Raycast ( hit.point , reflection , 1000 , layerMask );
             }
 
-            if ( hit.collider != null && hit.collider.gameObject.tag == "backwall" ) {
+            if ( hit.collider != null && hit.collider.gameObject.tag == backwallTag ) {
                 float dy = ( hit.point.y - paddle.transform.position.y );
 
                 output = Run ( ball.transform.position.x , ball.transform.position.y , ballRigidBody.velocity.x , ballRigidBody.velocity.y , paddle.transform.position.x , paddle.transform.position.y , dy , true );

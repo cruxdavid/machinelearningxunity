@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ScoreController : MonoBehaviour
 {
+    public static System.Action goal;
+
     [SerializeField]
     Text scoreText;
     int score = 0;
@@ -17,6 +19,9 @@ public class ScoreController : MonoBehaviour
         if ( collision.transform.tag == "ball" ) {
             score++;
             scoreText.text = "" + score;
+            if (goal != null) {
+                goal.Invoke ();
+            }
         }
     }
 }

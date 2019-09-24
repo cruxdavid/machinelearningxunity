@@ -10,6 +10,14 @@ public class MoveBall : MonoBehaviour {
     public AudioSource blip;
     public AudioSource blop;
 
+    private void OnEnable () {
+        ScoreController.goal += ScoreController_Goal;
+    }
+
+    private void OnDisable () {
+        ScoreController.goal -= ScoreController_Goal;
+    }
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody2D> ();
@@ -28,7 +36,16 @@ public class MoveBall : MonoBehaviour {
     public void ResetBall () {
         transform.position = ballStartPosition;
         rb.velocity = Vector3.zero;
-        Vector3 dir = new Vector3 ( Random.Range ( 100 , 300 ) , Random.Range ( -100 , 100 ) , 0 ).normalized;
+        Vector3 dir = new Vector3 ( Random.Range ( -300 , 300 ) , Random.Range ( -100 , 100 ) , 0 ).normalized;
+        StartCoroutine ( AddForceToBall ( dir ) );
+    }
+
+    IEnumerator AddForceToBall (Vector3 dir) {
+        yield return new WaitForSeconds (0.5f);
         rb.AddForce ( dir * speed );
+    }
+
+    void ScoreController_Goal () {
+        ResetBall ();
     }
 }
