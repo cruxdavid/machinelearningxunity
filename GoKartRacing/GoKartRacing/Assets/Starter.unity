@@ -895,8 +895,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
-  rotationSpeed: 100
-  visibleDistance: 200
+  rotationSpeed: 200
+  visibleDistance: 50
 --- !u!1 &961186399
 GameObject:
   m_ObjectHideFlags: 0
@@ -990,6 +990,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1121218721}
   - component: {fileID: 1121218718}
+  - component: {fileID: 1121218719}
   m_Layer: 0
   m_Name: ANNKart
   m_TagString: Untagged
@@ -1009,12 +1010,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bbfa6b21cb5d41b3b7dddfb00f7a8d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDistance: 200
+  visibleDistance: 50
   epochs: 1000
   speed: 50
-  rotationSpeed: 100
+  rotationSpeed: 200
   translation: 0
   rotation: 0
+  loadFromFile: 1
+--- !u!54 &1121218719
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121218717}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &1121218721
 Transform:
   m_ObjectHideFlags: 0
@@ -1550,7 +1568,7 @@ Transform:
   m_GameObject: {fileID: 1541183707}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -252.6, y: -5.3, z: -228}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 11, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3

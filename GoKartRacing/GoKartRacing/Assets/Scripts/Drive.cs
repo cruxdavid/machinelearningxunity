@@ -5,9 +5,9 @@ using System.IO;
 
 public class Drive : MonoBehaviour {
 
-    public float speed = 10.0f;
+    public float speed = 200.0f;
     public float rotationSpeed = 100.0f;
-    public float visibleDistance = 200.0f;
+    public float visibleDistance = 50.0f;
 
     List<string> collectedTrainingData = new List<string> ();
     StreamWriter tdf;
@@ -29,42 +29,44 @@ public class Drive : MonoBehaviour {
         transform.Translate ( 0 , 0 , translation );
         transform.Rotate ( 0 , rotation , 0 );
 
-        Debug.DrawRay ( transform.position , transform.forward * visibleDistance , Color.red ); // forward
-        Debug.DrawRay ( transform.position , transform.right * visibleDistance , Color.red ); // right
-        Debug.DrawRay ( transform.position , -transform.right * visibleDistance , Color.red ); // left
-        Debug.DrawRay ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right * visibleDistance , Color.red ); //right45
-        Debug.DrawRay ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right * visibleDistance , Color.red ); //left45 
-
         RaycastHit hit;
         float fDist = 0, rDist = 0, lDist = 0, r45Dist = 0, l45Dist = 0;
 
         //forward
         if ( Physics.Raycast ( transform.position , transform.forward , out hit , visibleDistance ) ) {
             fDist = 1 - Round ( hit.distance / visibleDistance );  //Normalize the distance
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         //right 
         if ( Physics.Raycast ( transform.position , transform.right , out hit , visibleDistance ) ) {
             rDist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         //left  
         if ( Physics.Raycast ( transform.position , -transform.right , out hit , visibleDistance ) ) {
             lDist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         // right45
         if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
             r45Dist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         // left45
         if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right , out hit , visibleDistance ) ) {
             l45Dist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
 
         //td stands for training data
         string td = fDist + "," + rDist + "," + lDist + "," + r45Dist + "," + l45Dist + "," + Round ( translationInput ) + "," + Round ( rotationInput );
 
-        if ( !collectedTrainingData.Contains ( td ) ) {
-            collectedTrainingData.Add ( td );
+        if ( translationInput != 0 && rotationInput != 0 ) {
+            if ( !collectedTrainingData.Contains ( td ) ) {
+                collectedTrainingData.Add ( td );
+            }
         }
+
 
 
     }

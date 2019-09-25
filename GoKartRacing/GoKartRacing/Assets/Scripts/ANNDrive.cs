@@ -19,10 +19,17 @@ public class ANNDrive : MonoBehaviour {
     public float translation;
     public float rotation;
 
+    public bool loadFromFile = false;
+
     // Start is called before the first frame update
     void Start () {
         ann = new ANN ( 5 , 2 , 1 , 10 , 0.5 );
-        StartCoroutine ( LoadTrainingSet () );
+        if ( loadFromFile ) {
+            LoadWeightsFromFile ();
+            trainingDone = true;
+        } else {
+            StartCoroutine ( LoadTrainingSet () );
+        }
     }
 
     private void Update () {
@@ -39,29 +46,34 @@ public class ANNDrive : MonoBehaviour {
         //forward
         if ( Physics.Raycast ( transform.position , transform.forward , out hit , visibleDistance ) ) {
             fDist = 1 - Round ( hit.distance / visibleDistance );  //Normalize the distance
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         //right 
         if ( Physics.Raycast ( transform.position , transform.right , out hit , visibleDistance ) ) {
             rDist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         //left  
         if ( Physics.Raycast ( transform.position , -transform.right , out hit , visibleDistance ) ) {
             lDist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         // right45
         if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
             r45Dist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
         // left45
-        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right , out hit , visibleDistance ) ) {
             l45Dist = 1 - Round ( hit.distance / visibleDistance );
+            Debug.DrawLine ( transform.position , hit.point , Color.red ); // forward
         }
 
         inputs.Add ( fDist );
-        inputs.Add ( lDist );
         inputs.Add ( rDist );
-        inputs.Add ( l45Dist );
+        inputs.Add ( lDist );
         inputs.Add ( r45Dist );
+        inputs.Add ( l45Dist );
 
         outputs.Add ( 0 );
         outputs.Add ( 0 );
@@ -71,7 +83,7 @@ public class ANNDrive : MonoBehaviour {
         float rotationInput = Map ( -1 , 1 , 0 , 1 , ( float ) calcOutputs[1] );
 
         translation = translationInput * speed * Time.deltaTime;
-        rotation = rotationInput * speed * Time.deltaTime;
+        rotation = rotationInput * rotationSpeed * Time.deltaTime;
 
         transform.Translate ( 0 , 0 , translation );
         transform.Rotate ( 0 , rotation , 0 );
@@ -129,8 +141,8 @@ public class ANNDrive : MonoBehaviour {
 
                 //if sse isn't better then reload previous set of weights
                 //and decrease alpha
-                if (lastSSE < sse) {
-                    ann.LoadWeights (currentWeights);
+                if ( lastSSE < sse ) {
+                    ann.LoadWeights ( currentWeights );
                     ann.alpha = Mathf.Clamp ( ( float ) ann.alpha - 0.001f , 0.01f , 0.9f );
                 } else {//increase alpha
                     ann.alpha = Mathf.Clamp ( ( float ) ann.alpha + 0.001f , 0.01f , 0.9f );
@@ -142,6 +154,24 @@ public class ANNDrive : MonoBehaviour {
         }
 
         trainingDone = true;
+        SaveWeightsToFile ();
+    }
+
+    void SaveWeightsToFile () {
+        string path = Application.dataPath + "/weights.txt";
+        StreamWriter wf = File.CreateText (path);
+        wf.WriteLine ( ann.PrintWeights () );
+        wf.Close ();
+    }
+
+    void LoadWeightsFromFile () {
+        string path = Application.dataPath + "/weights.txt";
+        StreamReader wf = File.OpenText ( path );
+
+        if (File.Exists(path)) {
+            string line = wf.ReadLine ();
+            ann.LoadWeights (line);
+        }
     }
 
     float Map ( float newfrom , float newto , float origfrom , float origto , float value ) {
@@ -152,7 +182,7 @@ public class ANNDrive : MonoBehaviour {
             return newto;
         }
 
-        return ( newto - newfrom ) * ( ( value - origfrom ) / ( origto - origfrom ) ) * newfrom;
+        return ( newto - newfrom ) * ( ( value - origfrom ) / ( origto - origfrom ) ) + newfrom;
     }
 
     float Round ( float x ) {
