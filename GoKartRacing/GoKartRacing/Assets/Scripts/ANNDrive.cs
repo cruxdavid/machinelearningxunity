@@ -25,6 +25,60 @@ public class ANNDrive : MonoBehaviour {
         StartCoroutine ( LoadTrainingSet () );
     }
 
+    private void Update () {
+        if ( !trainingDone ) return;
+
+        List<double> calcOutputs = new List<double> ();
+        List<double> inputs = new List<double> ();
+        List<double> outputs = new List<double> ();
+
+        //Raycasts
+        RaycastHit hit;
+        float fDist = 0, rDist = 0, lDist = 0, r45Dist = 0, l45Dist = 0;
+
+        //forward
+        if ( Physics.Raycast ( transform.position , transform.forward , out hit , visibleDistance ) ) {
+            fDist = 1 - Round ( hit.distance / visibleDistance );  //Normalize the distance
+        }
+        //right 
+        if ( Physics.Raycast ( transform.position , transform.right , out hit , visibleDistance ) ) {
+            rDist = 1 - Round ( hit.distance / visibleDistance );
+        }
+        //left  
+        if ( Physics.Raycast ( transform.position , -transform.right , out hit , visibleDistance ) ) {
+            lDist = 1 - Round ( hit.distance / visibleDistance );
+        }
+        // right45
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
+            r45Dist = 1 - Round ( hit.distance / visibleDistance );
+        }
+        // left45
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
+            l45Dist = 1 - Round ( hit.distance / visibleDistance );
+        }
+
+        inputs.Add ( fDist );
+        inputs.Add ( lDist );
+        inputs.Add ( rDist );
+        inputs.Add ( l45Dist );
+        inputs.Add ( r45Dist );
+
+        outputs.Add ( 0 );
+        outputs.Add ( 0 );
+
+        calcOutputs = ann.CalcOutput ( inputs , outputs );
+        float translationInput = Map ( -1 , 1 , 0 , 1 , ( float ) calcOutputs[0] );
+        float rotationInput = Map ( -1 , 1 , 0 , 1 , ( float ) calcOutputs[1] );
+
+        translation = translationInput * speed * Time.deltaTime;
+        rotation = rotationInput * speed * Time.deltaTime;
+
+        transform.Translate ( 0 , 0 , translation );
+        transform.Rotate ( 0 , rotation , 0 );
+
+
+    }
+
     private void OnGUI () {
         GUI.Label ( new Rect ( 25 , 25 , 250 , 30 ) , "SSE: " + lastSSE );
         GUI.Label ( new Rect ( 25 , 40 , 250 , 30 ) , "Alpha: " + ann.alpha );
@@ -46,7 +100,7 @@ public class ANNDrive : MonoBehaviour {
                 //set file pointer to beginning of file.
                 sse = 0;
                 tdf.BaseStream.Position = 0;
-
+                string currentWeights = ann.PrintWeights ();
                 while ( ( line = tdf.ReadLine () ) != null ) {
                     string[] data = line.Split ( ',' );
                     //if nothing to be learned ignore this line.
@@ -72,7 +126,16 @@ public class ANNDrive : MonoBehaviour {
                 }
                 trainingProgress = ( float ) i / ( float ) epochs;
                 sse /= lineCount;
-                lastSSE = sse;
+
+                //if sse isn't better then reload previous set of weights
+                //and decrease alpha
+                if (lastSSE < sse) {
+                    ann.LoadWeights (currentWeights);
+                    ann.alpha = Mathf.Clamp ( ( float ) ann.alpha - 0.001f , 0.01f , 0.9f );
+                } else {//increase alpha
+                    ann.alpha = Mathf.Clamp ( ( float ) ann.alpha + 0.001f , 0.01f , 0.9f );
+                    lastSSE = sse;
+                }
 
                 yield return null;
             }
@@ -83,16 +146,16 @@ public class ANNDrive : MonoBehaviour {
 
     float Map ( float newfrom , float newto , float origfrom , float origto , float value ) {
 
-        if (value <= origfrom) {
+        if ( value <= origfrom ) {
             return newfrom;
-        }else if (value >= origto) {
+        } else if ( value >= origto ) {
             return newto;
         }
 
         return ( newto - newfrom ) * ( ( value - origfrom ) / ( origto - origfrom ) ) * newfrom;
     }
 
-    float Round (float x) {
-        return ( float ) System.Math.Round (x , System.MidpointRounding.AwayFromZero) / 2.0f;
+    float Round ( float x ) {
+        return ( float ) System.Math.Round ( x , System.MidpointRounding.AwayFromZero ) / 2.0f;
     }
 }
