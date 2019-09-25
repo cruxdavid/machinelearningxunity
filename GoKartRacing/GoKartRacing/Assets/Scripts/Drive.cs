@@ -29,8 +29,11 @@ public class Drive : MonoBehaviour {
         transform.Translate ( 0 , 0 , translation );
         transform.Rotate ( 0 , rotation , 0 );
 
-        Debug.DrawRay ( transform.position , transform.forward * visibleDistance , Color.red );
-        Debug.DrawRay ( transform.position , transform.right * visibleDistance , Color.red );
+        Debug.DrawRay ( transform.position , transform.forward * visibleDistance , Color.red ); // forward
+        Debug.DrawRay ( transform.position , transform.right * visibleDistance , Color.red ); // right
+        Debug.DrawRay ( transform.position , -transform.right * visibleDistance , Color.red ); // left
+        Debug.DrawRay ( transform.position , Quaternion.AngleAxis ( -45 , Vector3.up ) * transform.right * visibleDistance , Color.red ); //right45
+        Debug.DrawRay ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right * visibleDistance , Color.red ); //left45 
 
         RaycastHit hit;
         float fDist = 0, rDist = 0, lDist = 0, r45Dist = 0, l45Dist = 0;
@@ -52,7 +55,7 @@ public class Drive : MonoBehaviour {
             r45Dist = 1 - Round ( hit.distance / visibleDistance );
         }
         // left45
-        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * transform.right , out hit , visibleDistance ) ) {
+        if ( Physics.Raycast ( transform.position , Quaternion.AngleAxis ( 45 , Vector3.up ) * -transform.right , out hit , visibleDistance ) ) {
             l45Dist = 1 - Round ( hit.distance / visibleDistance );
         }
 
@@ -67,7 +70,7 @@ public class Drive : MonoBehaviour {
     }
 
     float Round ( float x ) {
-        return (float) System.Math.Round ( x , System.MidpointRounding.AwayFromZero ) / 2.0f;
+        return ( float ) System.Math.Round ( x , System.MidpointRounding.AwayFromZero ) / 2.0f;
     }
 
     private void OnApplicationQuit () {
